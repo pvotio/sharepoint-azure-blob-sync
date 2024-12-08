@@ -29,4 +29,4 @@ ENV FILENAME_PATTERNS="[]"
 # EXPOSE 8000
 
 # Define entry point
-CMD ["python", "src/your_script.py"]
+CMD ["python", "src/main.py"]
