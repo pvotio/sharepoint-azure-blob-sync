@@ -1,4 +1,3 @@
-import msal
 import os
 from dotenv import load_dotenv
 import re
@@ -18,6 +17,7 @@ from enum import Enum
 from collections import Counter
 from threading import Lock
 from datetime import datetime, timedelta, timezone
+from azure.identity import ManagedIdentityCredential, DefaultAzureCredential
 
 # Configure Logging
 def setup_logging():
@@ -52,11 +52,9 @@ logger.debug("Logging is configured and script has started.")
 load_dotenv()
 
 # Retrieve values from environment variables
-TENANT = os.getenv("TENANT")
-CLIENT_ID = os.getenv("SHAREPOINT_CLIENT_ID")
-CLIENT_SECRET = os.getenv("SHAREPOINT_CLIENT_SECRET")
-AZURE_CONNECTION_STRING = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
-AZURE_CONTAINER_NAME = os.getenv("AZURE_BLOB_CONTAINER_NAME")
+# TENANT, CLIENT_ID, CLIENT_SECRET, AZURE_CONNECTION_STRING are no longer needed
+AZURE_BLOB_CONTAINER_NAME = os.getenv("AZURE_BLOB_CONTAINER_NAME")
+AZURE_STORAGE_ACCOUNT_NAME = os.getenv("AZURE_STORAGE_ACCOUNT_NAME")
 FOLDER_PATH = os.getenv("FOLDER_PATH")
 SITE_URL = os.getenv("SITE_URL")
 FILENAME_PATTERNS_JSON = os.getenv("FILENAME_PATTERNS")  # Expecting a JSON string
@@ -64,12 +62,11 @@ FILENAME_PATTERNS_JSON = os.getenv("FILENAME_PATTERNS")  # Expecting a JSON stri
 # Validate environment variables
 def validate_environment_variables():
     required_vars = {
-        "TENANT": TENANT,
-        "SHAREPOINT_CLIENT_ID": CLIENT_ID,
-        "SHAREPOINT_CLIENT_SECRET": CLIENT_SECRET,
-        "AZURE_STORAGE_CONNECTION_STRING": AZURE_CONNECTION_STRING,
-        "AZURE_BLOB_CONTAINER_NAME": AZURE_CONTAINER_NAME,
-        "FILENAME_PATTERNS": FILENAME_PATTERNS_JSON
+        "AZURE_BLOB_CONTAINER_NAME": AZURE_BLOB_CONTAINER_NAME,
+        "AZURE_STORAGE_ACCOUNT_NAME": AZURE_STORAGE_ACCOUNT_NAME,
+        "FILENAME_PATTERNS": FILENAME_PATTERNS_JSON,
+        "SITE_URL": SITE_URL,
+        "FOLDER_PATH": FOLDER_PATH
     }
 
     missing_vars = [var for var, value in required_vars.items() if not value]
@@ -111,20 +108,13 @@ class UploadStatus(Enum):
 
 def acquire_token():
     try:
-        authority_url = f'https://login.microsoftonline.com/{TENANT}'
-        app = msal.ConfidentialClientApplication(
-            authority=authority_url,
-            client_id=CLIENT_ID,
-            client_credential=CLIENT_SECRET
-        )
-        token = app.acquire_token_for_client(scopes=["https://graph.microsoft.com/.default"])
-        if "access_token" not in token:
-            logger.error(f"Failed to acquire token: {token}")
-            raise Exception(f"Failed to acquire token: {token}")
-        logger.debug("Successfully acquired access token.")
-        return token
+        credential = ManagedIdentityCredential()
+        token = credential.get_token("https://graph.microsoft.com/.default")
+        access_token = token.token
+        logger.debug("Successfully acquired access token via Managed Identity.")
+        return {"access_token": access_token}
     except Exception as e:
-        logger.exception("Exception occurred while acquiring token.")
+        logger.exception("Exception occurred while acquiring token via Managed Identity.")
         raise e
 
 def create_session_with_retries(total_retries=3, backoff_factor=1, status_forcelist=(500, 502, 504)):
@@ -149,14 +139,28 @@ def create_session_with_retries(total_retries=3, backoff_factor=1, status_forcel
 
 def connect_to_azure_blob():
     try:
-        blob_service_client = BlobServiceClient.from_connection_string(AZURE_CONNECTION_STRING)
-        container_client = blob_service_client.get_container_client(AZURE_CONTAINER_NAME)
+        # Initialize DefaultAzureCredential (includes ManagedIdentityCredential)
+        credential = DefaultAzureCredential()
+
+        # Construct the Blob service URL
+        blob_service_url = f"https://{AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net/"
+
+        # Create BlobServiceClient with Managed Identity credential
+        blob_service_client = BlobServiceClient(
+            account_url=blob_service_url,
+            credential=credential
+        )
+
+        # Get ContainerClient
+        container_client = blob_service_client.get_container_client(AZURE_BLOB_CONTAINER_NAME)
+
         # Create container if it doesn't exist
-        if not container_client.exists():
+        try:
             container_client.create_container()
-            logger.info(f"Created Azure Blob container: {AZURE_CONTAINER_NAME}")
-        else:
-            logger.info(f"Connected to existing Azure Blob container: {AZURE_CONTAINER_NAME}")
+            logger.info(f"Created Azure Blob container: {AZURE_BLOB_CONTAINER_NAME}")
+        except ResourceExistsError:
+            logger.info(f"Connected to existing Azure Blob container: {AZURE_BLOB_CONTAINER_NAME}")
+
         return container_client
     except Exception as e:
         logger.exception("Failed to connect to Azure Blob Storage.")
@@ -448,3 +452,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
