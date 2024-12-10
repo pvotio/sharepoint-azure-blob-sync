@@ -141,7 +141,7 @@ def connect_to_azure_blob():
     try:
         # Initialize DefaultAzureCredential (includes ManagedIdentityCredential)
         credential = DefaultAzureCredential()
-
+        
         # Construct the Blob service URL
         blob_service_url = f"https://{AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net/"
 
@@ -155,11 +155,11 @@ def connect_to_azure_blob():
         container_client = blob_service_client.get_container_client(AZURE_BLOB_CONTAINER_NAME)
 
         # Create container if it doesn't exist
-        try:
-            container_client.create_container()
-            logger.info(f"Created Azure Blob container: {AZURE_BLOB_CONTAINER_NAME}")
-        except ResourceExistsError:
-            logger.info(f"Connected to existing Azure Blob container: {AZURE_BLOB_CONTAINER_NAME}")
+        #try:
+        #    container_client.create_container()
+        #    logger.info(f"Created Azure Blob container: {AZURE_BLOB_CONTAINER_NAME}")
+        #except ResourceExistsError:
+        #    logger.info(f"Connected to existing Azure Blob container: {AZURE_BLOB_CONTAINER_NAME}")
 
         return container_client
     except Exception as e:
@@ -452,4 +452,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
