@@ -1,6 +1,5 @@
-msal
 python-dotenv
 requests
 office365-rest-python-client
 azure-storage-blob
-azure-core
+azure-identity
