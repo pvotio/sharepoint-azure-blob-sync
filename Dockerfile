@@ -16,10 +16,7 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 COPY src/ ./src/
 
 # Set environment variables (can be overridden at runtime)
-ENV TENANT=""
-ENV SHAREPOINT_CLIENT_ID=""
-ENV SHAREPOINT_CLIENT_SECRET=""
-ENV AZURE_STORAGE_CONNECTION_STRING=""
+ENV AZURE_STORAGE_ACCOUNT_NAME=""
 ENV AZURE_BLOB_CONTAINER_NAME=""
 ENV FOLDER_PATH=""
 ENV SITE_URL=""
@@ -29,4 +26,4 @@ ENV FILENAME_PATTERNS="[]"
 # EXPOSE 8000
 
 # Define entry point
-CMD ["python", "src/main.py"]
+CMD ["python", "src/your_script.py"]
