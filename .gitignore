@@ -10,9 +10,6 @@ logs/
 # Environment variables
 .env
 
-# Docker files
-*.env
-
 # Virtual environments
 venv/
 ENV/
