@@ -83,10 +83,11 @@ The application relies on several environment variables for configuration. These
 
 | Variable                        | Description                                                                                             |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `AZURE_STORAGE_ACCOUNT_NAME`    | Name of your Azure Storage Account.                                                                     |
 | `AZURE_BLOB_CONTAINER_NAME`     | Name of the target Azure Blob container.                                                                |
-| `FOLDER_PATH`                   | Path to the SharePoint folder to synchronize (e.g., `General/mydocuments`).     |
-| `SITE_URL`                      | URL of the SharePoint site (e.g., `https://xxx.sharepoint.com/sites/mysite`).     |
-| `FILENAME_PATTERNS`             | JSON-formatted string defining filename patterns and target folders.                                   |
+| `FOLDER_PATH`                   | Path to the SharePoint folder to synchronize (e.g., `General/mydocuments`).                             |
+| `SITE_URL`                      | URL of the SharePoint site (e.g., `https://xxx.sharepoint.com/sites/mysite`).                           |
+| `FILENAME_PATTERNS`             | JSON-formatted string defining filename patterns and target folders.                                    |
 
 ### Example FILENAME_PATTERNS
 
