@@ -58,10 +58,11 @@ Before setting up **SharePointAzureBlobSync**, ensure you have the following:
 
 - **Python 3.11** installed locally (for development and testing).
 - **Docker** installed on your machine.
-- **Azure DevOps** account with necessary permissions.
-- Access to the **SharePoint** site and appropriate permissions to read files.
+- **Kubernetes Cluster** (e.g., Azure Kubernetes Service - AKS) with **Azure Workload Identity** configured.
+- Access to the **SharePoint** site with appropriate permissions to read files.
 - An **Azure Storage Account** with Blob Storage enabled.
-- **Service Principal** credentials for authenticating with SharePoint and Azure.
+- **Azure Workload Identity** configured in your Kubernetes cluster.
+- Necessary **Azure Roles** assigned to the Managed Identity for accessing SharePoint and Azure Blob Storage.
 
 ## Installation
 
@@ -82,10 +83,6 @@ The application relies on several environment variables for configuration. These
 
 | Variable                        | Description                                                                                             |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `TENANT`                        | Your Azure Active Directory tenant ID or domain name.                                                  |
-| `SHAREPOINT_CLIENT_ID`          | Client ID of the Azure AD application with SharePoint access.                                         |
-| `SHAREPOINT_CLIENT_SECRET`      | Client Secret of the Azure AD application.                                                              |
-| `AZURE_STORAGE_CONNECTION_STRING` | Connection string for your Azure Storage Account.                                                      |
 | `AZURE_BLOB_CONTAINER_NAME`     | Name of the target Azure Blob container.                                                                |
 | `FOLDER_PATH`                   | Path to the SharePoint folder to synchronize (e.g., `General/mydocuments`).     |
 | `SITE_URL`                      | URL of the SharePoint site (e.g., `https://xxx.sharepoint.com/sites/mysite`).     |
