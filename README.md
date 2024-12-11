@@ -69,7 +69,7 @@ Before setting up **SharePointAzureBlobSync**, ensure you have the following:
 ### 1. Clone the Repository
 
 \`\`\`bash
-git clone https://github.com/arqs-io/SharePointAzureBlobSync.git
+git clone https://github.com/arqs-io/sharepoint-azure-blob-sync.git
 cd SharePointAzureBlobSync
 \`\`\`
 
