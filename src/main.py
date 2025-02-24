@@ -87,7 +87,7 @@ try:
             logger.warning(f"Invalid pattern item: {item}. Skipping.")
             continue
         try:
-            compiled_pattern = re.compile(pattern)
+            compiled_pattern = re.compile(pattern, re.IGNORECASE)
             filename_patterns.append((compiled_pattern, target_folder))
         except re.error as e:
             logger.error(f"Invalid regex pattern '{pattern}': {e}. Skipping.")
