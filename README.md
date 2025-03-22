@@ -151,4 +151,4 @@ This project is licensed under the MIT License.
 
 ## Contact
 
-For any questions or feedback, please contact [clem@arqs.io](mailto:your-email@example.com).
+For any questions or feedback, please contact [clem@pvot.io](mailto:your-email@example.com).
