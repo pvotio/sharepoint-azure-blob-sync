@@ -2,7 +2,6 @@
 # Sharepoint Azure Blob Sync
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.11-blue.svg)
 ![Docker](https://img.shields.io/badge/docker-enabled-blue.svg)
 
 ## Table of Contents
