@@ -28,7 +28,7 @@ def setup_logging():
     if not logger.handlers:
         # Create handlers
         c_handler = logging.StreamHandler()  # Console handler
-        log_file = os.path.join(os.path.dirname(__file__), 'download_upload.log')
+        log_file = os.path.join('/tmp', 'download_upload.log')
         f_handler = RotatingFileHandler(log_file, maxBytes=5 * 1024 * 1024, backupCount=5)  # File handler with rotation
 
         c_handler.setLevel(logging.INFO)  # Console handler set to INFO
@@ -389,7 +389,7 @@ def main():
         folder_item = drive.root.get_by_path(FOLDER_PATH).execute_query()
 
         # Define maximum number of files to download and upload
-        max_files_to_download = 10
+        max_files_to_download = 7000
         logger.info(f"Maximum files to download and upload set to: {max_files_to_download}")
 
         # Create a session with retry logic
